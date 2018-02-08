@@ -1,6 +1,13 @@
 const mysql = require("mysql");
 const inquirer = require("inquirer");
 const table = require("tty-table");
+const Customer = require("./BamazonCustomerConstructor")
+
+//var NewCustomer = new Customer()
+
+//console.log(NewCustomer.createTable)
+
+//NewCustomer.readProductsAndAskCustomer()
 
 var connection = mysql.createConnection({
   host: "localhost",
@@ -196,5 +203,7 @@ function createTable(res) {
 
   var respTableRender = responseTable.render();
   console.log(respTableRender);
-
+  return true
 }
+
+//module.exports = createTable
