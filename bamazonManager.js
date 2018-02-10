@@ -1,9 +1,6 @@
 const mysql = require("mysql");
 const inquirer = require("inquirer");
 const table = require("tty-table");
-//const createTable = require("./createTable")
-
-//console.log(createTable)
 
 var connection = mysql.createConnection({
   host: "localhost",
@@ -48,10 +45,7 @@ function askManager() {
         var quantity = answers.quantity
 
         connection.query("SELECT * FROM products WHERE id=?", [productId], function(err, res) {
-          if (err) if (err) {
-            console.log("Oooops, something went wrong! Check the item ID one more time and try again.")
-            tryAgainPurchase()
-          }
+          if (err) throw err
           var updateQuantity = res[0].stock_quantity + quantity
           addToInventory(updateQuantity, productId)
         })
