@@ -48,7 +48,10 @@ function askManager() {
         var quantity = answers.quantity
 
         connection.query("SELECT * FROM products WHERE id=?", [productId], function(err, res) {
-          if (err) throw err
+          if (err) if (err) {
+            console.log("Oooops, something went wrong! Check the item ID one more time and try again.")
+            tryAgainPurchase()
+          }
           var updateQuantity = res[0].stock_quantity + quantity
           addToInventory(updateQuantity, productId)
         })
@@ -151,13 +154,6 @@ function createTable(res) {
       paddingLeft : 5,
       width : 130
     },
-    // {
-    //   value : "department_name",
-    //   headerColor : "cyan",
-    //   color: "white",
-    //   align : "center",
-    //   width : 110
-    // },
     {
       value : "price",
       headerColor : "cyan",

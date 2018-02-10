@@ -3,12 +3,6 @@ const inquirer = require("inquirer");
 const table = require("tty-table");
 const Customer = require("./BamazonCustomerConstructor")
 
-//var NewCustomer = new Customer()
-
-//console.log(NewCustomer.createTable)
-
-//NewCustomer.readProductsAndAskCustomer()
-
 var connection = mysql.createConnection({
   host: "localhost",
   port: 3306,
@@ -89,7 +83,7 @@ function askCustomer() {
          console.log("")
          console.log(">>>>>>>>>>>>")
          console.log("")
-         console.log("Total cost of your purchase: " + totalCost + " USD.")
+         console.log("Total cost of your purchase: " + Math.round(totalCost) + " USD.")
          console.log("")
          console.log(">>>>>>>>>>>>")
          console.log("")
@@ -205,5 +199,3 @@ function createTable(res) {
   console.log(respTableRender);
   return true
 }
-
-//module.exports = createTable
