@@ -1,7 +1,7 @@
 const mysql = require("mysql");
 const inquirer = require("inquirer");
 const table = require("tty-table");
-const Customer = require("./BamazonCustomerConstructor")
+
 
 var connection = mysql.createConnection({
   host: "localhost",
@@ -48,54 +48,65 @@ function askCustomer() {
 
     connection.query("SELECT * FROM products WHERE id=?", [productIdUserWant], function(err, res) {
       if (err) throw err;
-
-      var totalCurrentStock = res[0].stock_quantity
-      var productName = res[0].product_name
-      var productPrice = res[0].price
-
-      if (numberOfUnitsUserWant > totalCurrentStock) {
-        if (parseInt(totalCurrentStock) === 0 ) {
-          console.log("")
-          console.log(">>>>>>>>>>>>")
-          console.log("")
-          console.log("Sorry, the item " + productName+ " with ID " + productIdUserWant + " is out of stock!")
-          console.log("")
-          console.log(">>>>>>>>>>>>")
-          console.log("")
-          createTable(res)
-          tryAgainPurchase()
-        } else {
-          console.log("")
-          console.log(">>>>>>>>>>>>")
-          console.log("")
-          console.log("Unfortunatly, we don't have enough items in stock for your purchase. We have " + totalCurrentStock +
-                      " of " + productName+ " with ID " + productIdUserWant + " left in stock.")
-          console.log("")
-          console.log(">>>>>>>>>>>>")
-          console.log("")
-          createTable(res)
-          tryAgainPurchase()
-        }
-
+      
+      if (res[0] === undefined) {
+        console.log("")
+        console.log(">>>>>>>>>>>>")
+        console.log("")
+        console.log("We didn't find the item with the requested ID. Try again, please.")
+        console.log("")
+        console.log(">>>>>>>>>>>>")
+        console.log("")
+        askCustomer()
       } else {
-        // update Database
-         var totalCost = productPrice * numberOfUnitsUserWant
-         console.log("")
-         console.log(">>>>>>>>>>>>")
-         console.log("")
-         console.log("Total cost of your purchase: " + Math.round(totalCost) + " USD.")
-         console.log("")
-         console.log(">>>>>>>>>>>>")
-         console.log("")
-
-         var unitsLeftInStockAfterPurchase = totalCurrentStock - numberOfUnitsUserWant
-
-         updateProduct(unitsLeftInStockAfterPurchase, productIdUserWant)
-
-         showAndAskAfterUpdate(productIdUserWant)
-
-        // show user the total cost of purchase
-      }
+        var totalCurrentStock = res[0].stock_quantity
+        var productName = res[0].product_name
+        var productPrice = res[0].price
+  
+        if (numberOfUnitsUserWant > totalCurrentStock) {
+          if (parseInt(totalCurrentStock) === 0 ) {
+            console.log("")
+            console.log(">>>>>>>>>>>>")
+            console.log("")
+            console.log("Sorry, the item " + productName+ " with ID " + productIdUserWant + " is out of stock!")
+            console.log("")
+            console.log(">>>>>>>>>>>>")
+            console.log("")
+            createTable(res)
+            tryAgainPurchase()
+          } else {
+            console.log("")
+            console.log(">>>>>>>>>>>>")
+            console.log("")
+            console.log("Unfortunatly, we don't have enough items in stock for your purchase. We have " + totalCurrentStock +
+                        " of " + productName+ " with ID " + productIdUserWant + " left in stock.")
+            console.log("")
+            console.log(">>>>>>>>>>>>")
+            console.log("")
+            createTable(res)
+            tryAgainPurchase()
+          }
+  
+        } else {
+          // update Database
+           var totalCost = productPrice * numberOfUnitsUserWant
+           console.log("")
+           console.log(">>>>>>>>>>>>")
+           console.log("")
+           console.log("Total cost of your purchase: " + Math.round(totalCost) + " USD.")
+           console.log("")
+           console.log(">>>>>>>>>>>>")
+           console.log("")
+  
+           var unitsLeftInStockAfterPurchase = totalCurrentStock - numberOfUnitsUserWant
+  
+           updateProduct(unitsLeftInStockAfterPurchase, productIdUserWant)
+  
+           showAndAskAfterUpdate(productIdUserWant)
+  
+          // show user the total cost of purchase
+        }
+      }  
   }) // end of connection
  }) //end of prompt
 }

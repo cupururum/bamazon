@@ -46,10 +46,22 @@ function askManager() {
 
         connection.query("SELECT * FROM products WHERE id=?", [productId], function(err, res) {
           if (err) throw err
-          var updateQuantity = res[0].stock_quantity + quantity
-          addToInventory(updateQuantity, productId)
-        })
-      })
+          if (res[0] === undefined) {
+            console.log("")
+            console.log(">>>>>>>>>>>>")
+            console.log("")
+            console.log("We didn't find the item with the requested ID. Try again, please.")
+            console.log("")
+            console.log(">>>>>>>>>>>>")
+            console.log("")
+            askManager()
+          } else {
+            var updateQuantity = parseInt(res[0].stock_quantity) + parseInt(quantity)
+            addToInventory(updateQuantity, productId)
+            askManager()
+          }
+        }) // end of connection
+      })//emd of then prompt
     } else if (managerChoice === "Add New Product") {
       inquirer.prompt([
         {
@@ -75,10 +87,10 @@ function askManager() {
       ]).then(function(answers) {
          addNewProduct(answers)
          showAllForSale()
+         askManager()
       })
     } else {
       connection.end()
-      return
     }
   })
 }
@@ -175,5 +187,4 @@ function createTable(res) {
 
   var respTableRender = responseTable.render();
   console.log(respTableRender);
-  return true
 }
